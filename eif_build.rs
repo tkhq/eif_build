@@ -12,6 +12,12 @@
 ///   --ramdisk  initramfs_x86.txt_part2.cpio.gz
 ///   --output   eif.bin
 ///
+
+extern crate aws_nitro_enclaves_image_format;
+extern crate clap;
+extern crate serde_json;
+extern crate sha2;
+
 use std::path::Path;
 
 use aws_nitro_enclaves_image_format::defs::EifIdentityInfo;
