@@ -17,6 +17,7 @@ extern crate aws_nitro_enclaves_image_format;
 extern crate clap;
 extern crate serde_json;
 extern crate sha2;
+extern crate chrono;
 
 use std::path::Path;
 
@@ -32,6 +33,8 @@ use sha2::{Digest, Sha256, Sha384, Sha512};
 use std::fmt::Debug;
 use std::fs::OpenOptions;
 use std::io::Write;
+use chrono::offset::Utc;
+use chrono::TimeZone;
 
 fn main() {
     let matches = App::new("Enclave image format builder")
@@ -184,6 +187,12 @@ fn main() {
         None => json!(null),
     };
 
+    let mut build_info = generate_build_info!(kernel_config_path).expect("Can not generate build info");
+    build_info.build_time = Utc.with_ymd_and_hms(1970, 0, 0, 0, 0, 0)
+        .single()
+        .unwrap()
+        .to_rfc3339();
+
     let eif_info = EifIdentityInfo {
         img_name: img_name.unwrap_or_else(|| {
             // Set default value to kernel file name
@@ -195,7 +204,7 @@ fn main() {
                 .to_string()
         }),
         img_version: img_version.unwrap_or_else(|| "1.0".to_string()),
-        build_info: generate_build_info!(kernel_config_path).expect("Can not generate build info"),
+        build_info,
         docker_info: json!(null),
         custom_info: metadata,
     };
