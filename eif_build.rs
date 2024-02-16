@@ -188,7 +188,7 @@ fn main() {
     };
 
     let mut build_info = generate_build_info!(kernel_config_path).expect("Can not generate build info");
-    build_info.build_time = Utc.with_ymd_and_hms(1970, 0, 0, 0, 0, 0)
+    build_info.build_time = Utc.timestamp_opt(0, 0)
         .single()
         .unwrap()
         .to_rfc3339();
